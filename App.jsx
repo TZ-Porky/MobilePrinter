@@ -1,9 +1,9 @@
 import React from 'react'
-import BluetoothPrinterApp from './src/BluetoothPrinterApp'
+import AppNavigator from './src/navigation/AppNavigator'
 
 const App = () => {
   return (
-    <BluetoothPrinterApp />
+    <AppNavigator />
   )
 }
 

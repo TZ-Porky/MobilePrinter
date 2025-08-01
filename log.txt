@@ -1,0 +1,365 @@
+
+> MobilePrinter@0.0.1 android
+> react-native run-android
+
+info A dev server is already running for this project on port 8081.
+info Installing the app...
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateAutolinkingNewArchitectureFiles UP-TO-DATE
+> Task :app:generateAutolinkingPackageList UP-TO-DATE
+> Task :app:generateCodegenSchemaFromJavaScript SKIPPED
+> Task :app:generateCodegenArtifactsFromSchema SKIPPED
+> Task :app:generateReactNativeEntryPoint UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-bluetooth-classic:preBuild UP-TO-DATE
+> Task :react-native-bluetooth-classic:preDebugBuild UP-TO-DATE
+> Task :react-native-bluetooth-classic:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-gesture-handler:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-gesture-handler:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-gesture-handler:preBuild UP-TO-DATE
+> Task :react-native-gesture-handler:preDebugBuild UP-TO-DATE
+> Task :react-native-gesture-handler:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-reanimated:assertMinimalReactNativeVersionTask SKIPPED
+> Task :react-native-reanimated:assertNewArchitectureEnabledTask SKIPPED
+> Task :react-native-reanimated:assertWorkletsVersionTask
+> Task :react-native-reanimated:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-reanimated:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-reanimated:prepareReanimatedHeadersForPrefabs UP-TO-DATE
+> Task :react-native-reanimated:preBuild
+> Task :react-native-reanimated:preDebugBuild
+> Task :react-native-reanimated:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-safe-area-context:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-safe-area-context:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-safe-area-context:preBuild UP-TO-DATE
+> Task :react-native-safe-area-context:preDebugBuild UP-TO-DATE
+> Task :react-native-safe-area-context:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-screens:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-screens:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-screens:preBuild UP-TO-DATE
+> Task :react-native-screens:preDebugBuild UP-TO-DATE
+> Task :react-native-screens:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-worklets:assertMinimalReactNativeVersionTask SKIPPED
+> Task :react-native-worklets:assertNewArchitectureEnabledTask SKIPPED
+> Task :react-native-worklets:generateCodegenSchemaFromJavaScript UP-TO-DATE
+> Task :react-native-worklets:generateCodegenArtifactsFromSchema UP-TO-DATE
+> Task :react-native-worklets:prepareWorkletsHeadersForPrefabs UP-TO-DATE
+> Task :react-native-worklets:preBuild UP-TO-DATE
+> Task :react-native-worklets:preDebugBuild UP-TO-DATE
+> Task :react-native-worklets:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :react-native-bluetooth-classic:generateDebugResValues UP-TO-DATE
+> Task :react-native-bluetooth-classic:generateDebugResources UP-TO-DATE
+> Task :react-native-bluetooth-classic:packageDebugResources UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugResValues UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugResources UP-TO-DATE
+> Task :react-native-gesture-handler:packageDebugResources UP-TO-DATE
+> Task :react-native-reanimated:generateDebugResValues UP-TO-DATE
+> Task :react-native-reanimated:generateDebugResources UP-TO-DATE
+> Task :react-native-reanimated:packageDebugResources UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResValues UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResources UP-TO-DATE
+> Task :react-native-safe-area-context:packageDebugResources UP-TO-DATE
+> Task :react-native-screens:generateDebugResValues UP-TO-DATE
+> Task :react-native-screens:generateDebugResources UP-TO-DATE
+> Task :react-native-screens:packageDebugResources UP-TO-DATE
+> Task :react-native-worklets:generateDebugResValues UP-TO-DATE
+> Task :react-native-worklets:generateDebugResources UP-TO-DATE
+> Task :react-native-worklets:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-bluetooth-classic:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-bluetooth-classic:processDebugManifest UP-TO-DATE
+> Task :react-native-gesture-handler:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-gesture-handler:processDebugManifest UP-TO-DATE
+> Task :react-native-reanimated:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-reanimated:processDebugManifest UP-TO-DATE
+> Task :react-native-safe-area-context:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-safe-area-context:processDebugManifest UP-TO-DATE
+> Task :react-native-screens:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-screens:processDebugManifest UP-TO-DATE
+> Task :react-native-worklets:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-worklets:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :react-native-bluetooth-classic:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-bluetooth-classic:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-bluetooth-classic:generateDebugRFile UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-gesture-handler:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-gesture-handler:generateDebugRFile UP-TO-DATE
+> Task :react-native-reanimated:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-reanimated:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-reanimated:generateDebugRFile UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-safe-area-context:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugRFile UP-TO-DATE
+> Task :react-native-screens:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-screens:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-screens:generateDebugRFile UP-TO-DATE
+> Task :react-native-worklets:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-worklets:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-worklets:generateDebugRFile UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :react-native-bluetooth-classic:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-bluetooth-classic:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-bluetooth-classic:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-bluetooth-classic:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-gesture-handler:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-gesture-handler:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-reanimated:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-reanimated:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-worklets:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-worklets:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-worklets:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-worklets:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-reanimated:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-reanimated:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugKotlin UP-TO-DATE
+> Task :react-native-gesture-handler:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-gesture-handler:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-safe-area-context:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-safe-area-context:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugKotlin UP-TO-DATE
+> Task :react-native-safe-area-context:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-screens:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-screens:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-screens:compileDebugKotlin UP-TO-DATE
+> Task :react-native-screens:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-screens:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-screens:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :react-native-bluetooth-classic:mergeDebugShaders UP-TO-DATE
+> Task :react-native-bluetooth-classic:compileDebugShaders NO-SOURCE
+> Task :react-native-bluetooth-classic:generateDebugAssets UP-TO-DATE
+> Task :react-native-bluetooth-classic:mergeDebugAssets UP-TO-DATE
+> Task :react-native-gesture-handler:mergeDebugShaders UP-TO-DATE
+> Task :react-native-gesture-handler:compileDebugShaders NO-SOURCE
+> Task :react-native-gesture-handler:generateDebugAssets UP-TO-DATE
+> Task :react-native-gesture-handler:mergeDebugAssets UP-TO-DATE
+> Task :react-native-reanimated:mergeDebugShaders UP-TO-DATE
+> Task :react-native-reanimated:compileDebugShaders NO-SOURCE
+> Task :react-native-reanimated:generateDebugAssets UP-TO-DATE
+> Task :react-native-reanimated:mergeDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugShaders UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugShaders NO-SOURCE
+> Task :react-native-safe-area-context:generateDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugAssets UP-TO-DATE
+> Task :react-native-screens:mergeDebugShaders UP-TO-DATE
+> Task :react-native-screens:compileDebugShaders NO-SOURCE
+> Task :react-native-screens:generateDebugAssets UP-TO-DATE
+> Task :react-native-screens:mergeDebugAssets UP-TO-DATE
+> Task :react-native-worklets:mergeDebugShaders UP-TO-DATE
+> Task :react-native-worklets:compileDebugShaders NO-SOURCE
+> Task :react-native-worklets:generateDebugAssets UP-TO-DATE
+> Task :react-native-worklets:mergeDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :react-native-gesture-handler:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-screens:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-bluetooth-classic:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-reanimated:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-worklets:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:dexBuilderDebug UP-TO-DATE
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :react-native-bluetooth-classic:processDebugJavaRes NO-SOURCE
+> Task :react-native-gesture-handler:processDebugJavaRes UP-TO-DATE
+> Task :react-native-reanimated:processDebugJavaRes NO-SOURCE
+> Task :react-native-safe-area-context:processDebugJavaRes UP-TO-DATE
+> Task :react-native-screens:processDebugJavaRes UP-TO-DATE
+> Task :react-native-worklets:processDebugJavaRes NO-SOURCE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :react-native-gesture-handler:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-screens:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-bluetooth-classic:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-reanimated:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-worklets:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeProjectDexDebug UP-TO-DATE
+> Task :react-native-worklets:configureCMakeDebug[arm64-v8a]
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :react-native-worklets:configureCMakeDebug[armeabi-v7a]
+> Task :react-native-worklets:configureCMakeDebug[x86]
+> Task :react-native-worklets:configureCMakeDebug[x86_64]
+> Task :react-native-worklets:generateJsonModelDebug
+> Task :react-native-worklets:prefabDebugConfigurePackage UP-TO-DATE
+> Task :react-native-reanimated:configureCMakeDebug[arm64-v8a]
+> Task :react-native-reanimated:configureCMakeDebug[armeabi-v7a]
+> Task :react-native-reanimated:configureCMakeDebug[x86]
+> Task :react-native-reanimated:configureCMakeDebug[x86_64]
+> Task :react-native-reanimated:generateJsonModelDebug
+> Task :react-native-reanimated:prefabDebugConfigurePackage UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :react-native-worklets:buildCMakeDebug[arm64-v8a][worklets]
+> Task :react-native-worklets:buildCMakeDebug[armeabi-v7a][worklets]
+> Task :react-native-worklets:buildCMakeDebug[x86][worklets]
+> Task :react-native-worklets:buildCMakeDebug[x86_64][worklets]
+> Task :react-native-worklets:externalNativeBuildDebug
+> Task :react-native-worklets:prefabDebugPackage UP-TO-DATE
+> Task :react-native-reanimated:buildCMakeDebug[arm64-v8a][reanimated]
+> Task :react-native-reanimated:buildCMakeDebug[armeabi-v7a][reanimated]
+> Task :react-native-reanimated:buildCMakeDebug[x86][reanimated]
+C/C++: ninja: Entering directory `/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/.cxx/Debug/1t2k3l46/x86'
+C/C++: /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=i686-none-linux-android24 --sysroot=/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dreanimated_EXPORTS -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/../Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/src/main/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/yoga -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactAndroid/src/main/jni/react/turbomodule -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/callinvoker -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/runtimeexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/jsiexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/react/renderer/graphics/platform/cxx -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/android/src/main/cpp -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/jsi/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/51dbd9ae21c085b2cb843db84b5d6696/transformed/fbjni-0.7.0/prefab/modules/fbjni/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/reactnative/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -DREACT_NATIVE_MINOR_VERSION=80    -DREANIMATED_PROFILING=false    -DREANIMATED_VERSION=4.0.1    -DREANIMATED_FEATURE_FLAGS="[DISABLE_COMMIT_PAUSING_MECHANISM:false][ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS:false][EXAMPLE_STATIC_FLAG:true]" -fexceptions -frtti -std=c++20 -Wall -Werror -fno-omit-frame-pointer -fstack-protector-all -fno-limit-debug-info  -fPIC -DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_MOBILE=1 -DFOLLY_HAVE_RECVMMSG=1 -DFOLLY_HAVE_PTHREAD=1 -DFOLLY_HAVE_XSI_STRERROR_R=1 -std=gnu++20 -MD -MT CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -MF CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o.d -o CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -c /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp
+C/C++: 0.	Program arguments: /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=i686-none-linux-android24 --sysroot=/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dreanimated_EXPORTS -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/../Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/src/main/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/yoga -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactAndroid/src/main/jni/react/turbomodule -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/callinvoker -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/runtimeexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/jsiexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/react/renderer/graphics/platform/cxx -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/android/src/main/cpp -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/jsi/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/51dbd9ae21c085b2cb843db84b5d6696/transformed/fbjni-0.7.0/prefab/modules/fbjni/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/reactnative/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -DREACT_NATIVE_MINOR_VERSION=80 -DREANIMATED_PROFILING=false -DREANIMATED_VERSION=4.0.1 -DREANIMATED_FEATURE_FLAGS=[DISABLE_COMMIT_PAUSING_MECHANISM:false][ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS:false][EXAMPLE_STATIC_FLAG:true] -fexceptions -frtti -std=c++20 -Wall -Werror -fno-omit-frame-pointer -fstack-protector-all -fno-limit-debug-info -fPIC -DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_MOBILE=1 -DFOLLY_HAVE_RECVMMSG=1 -DFOLLY_HAVE_PTHREAD=1 -DFOLLY_HAVE_XSI_STRERROR_R=1 -std=gnu++20 -MD -MT CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -MF CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o.d -o CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -c /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp
+C/C++: clang++: error: clang frontend command failed with exit code 139 (use -v to see invocation)
+C/C++: Android (12285214, +pgo, +bolt, +lto, +mlgo, based on r522817b) clang version 18.0.2 (https://android.googlesource.com/toolchain/llvm-project d8003a456d14a3deb8054cdaa529ffbf02d9b262)
+C/C++: Target: i686-none-linux-android24
+C/C++: Thread model: posix
+C/C++: InstalledDir: /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin
+C/C++: clang++: note: diagnostic msg: 
+C/C++: ********************
+C/C++: PLEASE ATTACH THE FOLLOWING FILES TO THE BUG REPORT:
+C/C++: Preprocessed source(s) and associated run script(s) are located at:
+C/C++: clang++: note: diagnostic msg: /tmp/CSSAnimationsRegistry-368078.cpp
+C/C++: clang++: note: diagnostic msg: /tmp/CSSAnimationsRegistry-368078.sh
+C/C++: clang++: note: diagnostic msg: 
+C/C++: ********************
+C/C++: [14/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/util/interpolators.cpp.o
+C/C++: [15/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSKeyframesRegistry.cpp.o
+C/C++: [16/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/TransitionProgressProvider.cpp.o
+C/C++: [17/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSTransitionsRegistry.cpp.o
+C/C++: [18/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/util/DelayedItemsManager.cpp.o
+C/C++: ninja: build stopped: subcommand failed.
+
+> Task :react-native-reanimated:buildCMakeDebug[x86][reanimated] FAILED
+
+[Incubating] Problems report is available at: file:///home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+183 actionable tasks: 18 executed, 165 up-to-date
+
+info 💡 Tip: Make sure that you have set up your development environment correctly, by running npx react-native doctor. To read more about doctor command visit: https://github.com/react-native-community/cli/blob/main/packages/cli-doctor/README.md#doctor 
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':react-native-reanimated:buildCMakeDebug[x86][reanimated]'.
+> com.android.ide.common.process.ProcessException: ninja: Entering directory `/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/.cxx/Debug/1t2k3l46/x86'
+  [0/2] Re-checking globbed directories...
+  [1/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/groups/RecordPropertiesInterpolator.cpp.o
+  [2/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperationInterpolator.cpp.o
+  [3/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformOperation.cpp.o
+  [4/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSAnimation.cpp.o
+  [5/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/misc/ViewStylesRepository.cpp.o
+  [6/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/RawProgressProvider.cpp.o
+  [7/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/styles/TransitionStyleInterpolator.cpp.o
+  [8/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/interpolation/transforms/TransformsStyleInterpolator.cpp.o
+  [9/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/core/CSSTransition.cpp.o
+  [10/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/AnimationProgressProvider.cpp.o
+  [11/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/StaticPropsRegistry.cpp.o
+  [12/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/util/algorithms.cpp.o
+  [13/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o
+  FAILED: CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o 
+  /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=i686-none-linux-android24 --sysroot=/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dreanimated_EXPORTS -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/../Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/src/main/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/yoga -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactAndroid/src/main/jni/react/turbomodule -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/callinvoker -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/runtimeexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/jsiexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/react/renderer/graphics/platform/cxx -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/android/src/main/cpp -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/jsi/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/51dbd9ae21c085b2cb843db84b5d6696/transformed/fbjni-0.7.0/prefab/modules/fbjni/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/reactnative/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -DREACT_NATIVE_MINOR_VERSION=80    -DREANIMATED_PROFILING=false    -DREANIMATED_VERSION=4.0.1    -DREANIMATED_FEATURE_FLAGS="[DISABLE_COMMIT_PAUSING_MECHANISM:false][ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS:false][EXAMPLE_STATIC_FLAG:true]" -fexceptions -frtti -std=c++20 -Wall -Werror -fno-omit-frame-pointer -fstack-protector-all -fno-limit-debug-info  -fPIC -DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_MOBILE=1 -DFOLLY_HAVE_RECVMMSG=1 -DFOLLY_HAVE_PTHREAD=1 -DFOLLY_HAVE_XSI_STRERROR_R=1 -std=gnu++20 -MD -MT CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -MF CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o.d -o CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -c /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp
+  PLEASE submit a bug report to https://github.com/android-ndk/ndk/issues and include the crash backtrace, preprocessed source, and associated run script.
+  Stack dump:
+  0.	Program arguments: /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=i686-none-linux-android24 --sysroot=/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/sysroot -Dreanimated_EXPORTS -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/../Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/src/main/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/yoga -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactAndroid/src/main/jni/react/turbomodule -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/callinvoker -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/runtimeexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/jsiexecutor -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native/ReactCommon/react/renderer/graphics/platform/cxx -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/Common/cpp -I/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-worklets/android/src/main/cpp -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/jsi/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/51dbd9ae21c085b2cb843db84b5d6696/transformed/fbjni-0.7.0/prefab/modules/fbjni/include -isystem /home/tkbille/.gradle/caches/8.14.1/transforms/5d0a6fceadea979a29a63bd98787fde9/transformed/react-android-0.80.2-debug/prefab/modules/reactnative/include -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -DREACT_NATIVE_MINOR_VERSION=80 -DREANIMATED_PROFILING=false -DREANIMATED_VERSION=4.0.1 -DREANIMATED_FEATURE_FLAGS=[DISABLE_COMMIT_PAUSING_MECHANISM:false][ANDROID_SYNCHRONOUSLY_UPDATE_UI_PROPS:false][EXAMPLE_STATIC_FLAG:true] -fexceptions -frtti -std=c++20 -Wall -Werror -fno-omit-frame-pointer -fstack-protector-all -fno-limit-debug-info -fPIC -DFOLLY_NO_CONFIG=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_MOBILE=1 -DFOLLY_HAVE_RECVMMSG=1 -DFOLLY_HAVE_PTHREAD=1 -DFOLLY_HAVE_XSI_STRERROR_R=1 -std=gnu++20 -MD -MT CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -MF CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o.d -o CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp.o -c /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSAnimationsRegistry.cpp
+  1.	<eof> parser at end of file
+   #0 0x0000605a1902e8c2 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x442e8c2)
+   #1 0x0000605a1902d7c0 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x442d7c0)
+   #2 0x0000605a190007ae (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x44007ae)
+   #3 0x0000605a190008d6 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x44008d6)
+   #4 0x000071b873541cd0 (/usr/lib/libc.so.6+0x3dcd0)
+   #5 0x000071b8735aa8d8 cfree (/usr/lib/libc.so.6+0xa68d8)
+   #6 0x0000605a1a90d8f0 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x5d0d8f0)
+   #7 0x0000605a1b965861 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6d65861)
+   #8 0x0000605a1b53fdf3 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x693fdf3)
+   #9 0x0000605a1b53f670 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x693f670)
+  #10 0x0000605a1b53f3b4 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x693f3b4)
+  #11 0x0000605a1b53eed0 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x693eed0)
+  #12 0x0000605a1ae6a947 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x626a947)
+  #13 0x0000605a1ae697f9 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x62697f9)
+  #14 0x0000605a1ae696a9 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x62696a9)
+  #15 0x0000605a1ae6967e (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x626967e)
+  #16 0x0000605a1b72e916 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6b2e916)
+  #17 0x0000605a1b80844e (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6c0844e)
+  #18 0x0000605a1b87cad5 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6c7cad5)
+  #19 0x0000605a1b9ad377 (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6dad377)
+  #20 0x0000605a1b9ac69e (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6dac69e)
+  #21 0x000071b87352b488 (/usr/lib/libc.so.6+0x27488)
+  #22 0x000071b87352b54c __libc_start_main (/usr/lib/libc.so.6+0x2754c)
+  #23 0x0000605a1b303fbf (/home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/clang+++0x6703fbf)
+  clang++: error: clang frontend command failed with exit code 139 (use -v to see invocation)
+  Android (12285214, +pgo, +bolt, +lto, +mlgo, based on r522817b) clang version 18.0.2 (https://android.googlesource.com/toolchain/llvm-project d8003a456d14a3deb8054cdaa529ffbf02d9b262)
+  Target: i686-none-linux-android24
+  Thread model: posix
+  InstalledDir: /home/tkbille/Android/Sdk/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin
+  clang++: note: diagnostic msg: 
+  ********************
+  
+  PLEASE ATTACH THE FOLLOWING FILES TO THE BUG REPORT:
+  Preprocessed source(s) and associated run script(s) are located at:
+  clang++: note: diagnostic msg: /tmp/CSSAnimationsRegistry-368078.cpp
+  clang++: note: diagnostic msg: /tmp/CSSAnimationsRegistry-368078.sh
+  clang++: note: diagnostic msg: 
+  
+  ********************
+  [14/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/util/interpolators.cpp.o
+  [15/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSKeyframesRegistry.cpp.o
+  [16/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/progress/TransitionProgressProvider.cpp.o
+  [17/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/registry/CSSTransitionsRegistry.cpp.o
+  [18/39] Building CXX object CMakeFiles/reanimated.dir/home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/Common/cpp/reanimated/CSS/util/DelayedItemsManager.cpp.o
+  ninja: build stopped: subcommand failed.
+  
+  C++ build system [build] failed while executing:
+      /home/tkbille/Android/Sdk/cmake/3.22.1/bin/ninja \
+        -C \
+        /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android/.cxx/Debug/1t2k3l46/x86 \
+        reanimated
+    from /home/tkbille/Bureau/ReactNativeApplications/MobilePrinter/node_modules/react-native-reanimated/android
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 55s
+info Run CLI with --verbose flag for more details.
