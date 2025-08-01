@@ -105,8 +105,6 @@ class BluetoothService {
       logService.addLog('🔍 Vérification des permissions...', 'info');
 
       const requiredPermissions = [
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ];
 

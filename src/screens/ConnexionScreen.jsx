@@ -1,38 +1,282 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { useEffect } from 'react'
-import WhiteButton from '../components/WhiteButton'
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  Image, 
+  Alert,
+  Animated,
+  Easing 
+} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import WhiteButton from '../components/WhiteButton';
+import { useBluetoothService } from '../hooks/useBluetoothService';
 
-const ConnexionScreen = ({navigation}) => {
+const ConnexionScreen = ({ navigation, route }) => {
+  const [connectionAttempts, setConnectionAttempts] = useState(0);
+  const [connectionMessage, setConnectionMessage] = useState('Connexion en cours...');
+  const [isConnecting, setIsConnecting] = useState(true);
+  
+  // Animation
+  const rotateValue = useRef(new Animated.Value(0)).current;
+  const pulseValue = useRef(new Animated.Value(1)).current;
 
-  useEffect(() =>{
-    const timer = setTimeout(() => {
-      if (navigation) {
-        navigation.replace('Dashboard');
+  // Récupération des paramètres de navigation
+  const device = route?.params?.device;
+  const onConnectionResult = route?.params?.onConnectionResult;
+
+  // Hook Bluetooth
+  const {
+    connectToDevice,
+    connectionStatus,
+    isConnected,
+    connectedDevice,
+  } = useBluetoothService();
+
+  // Animation de rotation continue
+  useEffect(() => {
+    const rotateAnimation = Animated.loop(
+      Animated.timing(rotateValue, {
+        toValue: 1,
+        duration: 2000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+
+    const pulseAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseValue, {
+          toValue: 1.1,
+          duration: 1000,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseValue, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+
+    if (isConnecting) {
+      rotateAnimation.start();
+      pulseAnimation.start();
+    } else {
+      rotateAnimation.stop();
+      pulseAnimation.stop();
+    }
+
+    return () => {
+      rotateAnimation.stop();
+      pulseAnimation.stop();
+    };
+  }, [isConnecting, rotateValue, pulseValue]);
+
+  // Logique de connexion
+  useEffect(() => {
+    let connectionTimer;
+    let timeoutTimer;
+
+    const attemptConnection = async () => {
+      if (!device) {
+        Alert.alert('Erreur', 'Aucun appareil spécifié pour la connexion');
+        navigation.goBack();
+        return;
       }
-    }, 2000);
 
-    return () => clearTimeout(timer); 
-  },[navigation])
+      try {
+        setConnectionMessage(`Tentative de connexion à ${device.name || device.address}...`);
+        setConnectionAttempts(prev => prev + 1);
+
+        const success = await connectToDevice(device);
+
+        if (success) {
+          setConnectionMessage('Connexion réussie !');
+          setIsConnecting(false);
+          
+          // Notifier le résultat si callback fourni
+          if (onConnectionResult) {
+            onConnectionResult(true);
+          }
+
+          // Délai avant redirection
+          setTimeout(() => {
+            navigation.replace('Dashboard');
+          }, 1500);
+        } else {
+          throw new Error('Échec de la connexion');
+        }
+      } catch (error) {
+        console.log('Erreur de connexion:', error);
+        
+        if (connectionAttempts < 3) {
+          setConnectionMessage(`Échec de la tentative ${connectionAttempts}. Nouvelle tentative...`);
+          // Réessayer après 2 secondes
+          connectionTimer = setTimeout(attemptConnection, 2000);
+        } else {
+          setConnectionMessage('Connexion échouée');
+          setIsConnecting(false);
+          
+          Alert.alert(
+            'Connexion échouée',
+            `Impossible de se connecter à ${device.name || device.address}. Veuillez vérifier que l'imprimante est allumée et à proximité.`,
+            [
+              {
+                text: 'Réessayer',
+                onPress: () => {
+                  setConnectionAttempts(0);
+                  setIsConnecting(true);
+                  attemptConnection();
+                }
+              },
+              {
+                text: 'Annuler',
+                onPress: () => {
+                  if (onConnectionResult) {
+                    onConnectionResult(false);
+                  }
+                  navigation.goBack();
+                }
+              }
+            ]
+          );
+        }
+      }
+    };
+
+    // Démarrer la connexion si un device est fourni
+    if (device && isConnecting) {
+      // Délai initial pour l'effet visuel
+      connectionTimer = setTimeout(attemptConnection, 1000);
+    } else if (!device) {
+      // Mode simulation (comportement original)
+      timeoutTimer = setTimeout(() => {
+        setIsConnecting(false);
+        navigation.replace('Dashboard');
+      }, 2000);
+    }
+
+    // Timeout global de sécurité (30 secondes)
+    const globalTimeout = setTimeout(() => {
+      if (isConnecting) {
+        setConnectionMessage('Timeout de connexion');
+        setIsConnecting(false);
+        Alert.alert(
+          'Timeout',
+          'La connexion prend trop de temps. Veuillez réessayer.',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                if (onConnectionResult) {
+                  onConnectionResult(false);
+                }
+                navigation.goBack();
+              }
+            }
+          ]
+        );
+      }
+    }, 30000);
+
+    return () => {
+      if (connectionTimer) clearTimeout(connectionTimer);
+      if (timeoutTimer) clearTimeout(timeoutTimer);
+      clearTimeout(globalTimeout);
+    };
+  }, [device, connectToDevice, navigation, onConnectionResult, connectionAttempts, isConnecting]);
+
+  // Surveiller les changements de statut de connexion
+  useEffect(() => {
+    if (isConnected() && connectedDevice && isConnecting) {
+      setConnectionMessage('Connexion établie !');
+      setIsConnecting(false);
+      
+      setTimeout(() => {
+        if (onConnectionResult) {
+          onConnectionResult(true);
+        }
+        navigation.replace('Dashboard');
+      }, 1500);
+    }
+  }, [isConnected, connectedDevice, navigation, onConnectionResult, isConnecting]);
 
   const cancelConnection = () => {
-    navigation.goBack()
-  }
+    Alert.alert(
+      'Annuler la connexion',
+      'Êtes-vous sûr de vouloir annuler la connexion ?',
+      [
+        {
+          text: 'Non',
+          style: 'cancel'
+        },
+        {
+          text: 'Oui',
+          onPress: () => {
+            if (onConnectionResult) {
+              onConnectionResult(false);
+            }
+            navigation.goBack();
+          }
+        }
+      ]
+    );
+  };
+
+  // Styles d'animation
+  const rotateInterpolate = rotateValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const animatedStyle = {
+    transform: [
+      { scale: pulseValue }
+    ],
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.statutTitle}>Connexion en cours...</Text>
-      <Text style={styles.statutLabel}>Veuillez à ne pas éteindre le bluetooth de l'appareil ni celui de l'imprimante.</Text>
+      
+      <Text style={styles.statutLabel}>
+        {device ? (
+          `Connexion à ${device.name || device.address}.`
+        ) : (
+          'Veuillez ne pas éteindre le bluetooth de l\'appareil ni celui de l\'imprimante.'
+        )}
+      </Text>
+
+      {/* Affichage des tentatives */}
+      {connectionAttempts > 0 && (
+        <Text style={styles.attemptsText}>
+          Tentative {connectionAttempts}/3
+        </Text>
+      )}
+
+      {/* Animation de connexion */}
       <View style={styles.loadingAnimation}>
-        <View style={styles.blueDisk}>
+        <Animated.View style={[styles.blueDisk, animatedStyle]}>
           <View style={styles.whiteDisk}>
             <Image source={require('../assets/images/Printer.png')} />
           </View>
-        </View>
+        </Animated.View>
       </View>
-      <WhiteButton text={'Annuler'} onPress={cancelConnection}/>
+
+      {/* Statut de la connexion */}
+      <Text style={styles.statusText}>
+        {connectionStatus}
+      </Text>
+
+      <WhiteButton 
+        text={isConnecting ? 'Annuler' : 'Retour'} 
+        onPress={cancelConnection}
+        isActive={true}
+      />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +286,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 15,
     justifyContent: 'center',
-    alignItems:'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   statutTitle: {
     fontSize: 18,
@@ -54,31 +299,44 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: '#fff',
     textAlign: 'center',
+    lineHeight: 24,
+  },
+  attemptsText: {
+    fontSize: 16,
+    color: '#E3F2FD',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  statusText: {
+    fontSize: 14,
+    color: '#E3F2FD',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   loadingAnimation: {
-    height: '320',
-    width: '320',
+    height: 320,
+    width: 320,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius:'50%',
-    backgroundColor:'#3F96E8',
+    borderRadius: 160,
+    backgroundColor: '#3F96E8',
   },
   blueDisk: {
-    height: '280',
-    width: '280',
+    height: 280,
+    width: 280,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#79B5EF',
-    borderRadius:'50%',
+    backgroundColor: '#79B5EF',
+    borderRadius: 140,
   },
   whiteDisk: {
-    height: '250',
-    width: '250',
+    height: 250,
+    width: 250,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#fff',
-    borderRadius:'50%',
-  }
-})
+    backgroundColor: '#fff',
+    borderRadius: 125,
+  },
+});
 
-export default ConnexionScreen
+export default ConnexionScreen;
