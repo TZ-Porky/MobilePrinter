@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { 
   View, 
   Text, 
@@ -9,9 +10,11 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import WhiteButton from '../components/WhiteButton';
-import { useBluetoothService } from '../hooks/useBluetoothService';
+import { useBluetoothContext } from '../hooks/useBluetoothContext';
 
 const ConnexionScreen = ({ navigation, route }) => {
+  // ==================== Variables ==================== //
+  const hasNotified = useRef(false);
   const [connectionAttempts, setConnectionAttempts] = useState(0);
   const [connectionMessage, setConnectionMessage] = useState('Connexion en cours...');
   const [isConnecting, setIsConnecting] = useState(true);
@@ -24,14 +27,16 @@ const ConnexionScreen = ({ navigation, route }) => {
   const device = route?.params?.device;
   const onConnectionResult = route?.params?.onConnectionResult;
 
+  // ==================== Hooks ==================== //
   // Hook Bluetooth
   const {
     connectToDevice,
     connectionStatus,
     isConnected,
     connectedDevice,
-  } = useBluetoothService();
+  } = useBluetoothContext();
 
+  // ==================== Animations ==================== //
   // Animation de rotation continue
   useEffect(() => {
     const rotateAnimation = Animated.loop(
@@ -74,6 +79,7 @@ const ConnexionScreen = ({ navigation, route }) => {
     };
   }, [isConnecting, rotateValue, pulseValue]);
 
+  // ==================== Fonctionnalité de Connexion ==================== //
   // Logique de connexion
   useEffect(() => {
     let connectionTimer;
@@ -86,20 +92,26 @@ const ConnexionScreen = ({ navigation, route }) => {
         return;
       }
 
+      if (isConnected()) {
+        console.log("Déjà connecté, on annule la tentative.");
+        return;
+      }
+
+      const success = await connectToDevice(device);
+
       try {
         setConnectionMessage(`Tentative de connexion à ${device.name || device.address}...`);
         setConnectionAttempts(prev => prev + 1);
-
-        const success = await connectToDevice(device);
-
+        
         if (success) {
           setConnectionMessage('Connexion réussie !');
           setIsConnecting(false);
           
           // Notifier le résultat si callback fourni
-          if (onConnectionResult) {
+          if (onConnectionResult && !hasNotified.current) {
+            hasNotified.current = true;
             onConnectionResult(true);
-          }
+          }          
 
           // Délai avant redirection
           setTimeout(() => {
@@ -111,7 +123,7 @@ const ConnexionScreen = ({ navigation, route }) => {
       } catch (error) {
         console.log('Erreur de connexion:', error);
         
-        if (connectionAttempts < 3) {
+        if (connectionAttempts < 2) {
           setConnectionMessage(`Échec de la tentative ${connectionAttempts}. Nouvelle tentative...`);
           // Réessayer après 2 secondes
           connectionTimer = setTimeout(attemptConnection, 2000);
@@ -146,16 +158,13 @@ const ConnexionScreen = ({ navigation, route }) => {
       }
     };
 
+    // ==================== Initialisation de connexion ==================== //
     // Démarrer la connexion si un device est fourni
     if (device && isConnecting) {
       // Délai initial pour l'effet visuel
       connectionTimer = setTimeout(attemptConnection, 1000);
     } else if (!device) {
-      // Mode simulation (comportement original)
-      timeoutTimer = setTimeout(() => {
-        setIsConnecting(false);
-        navigation.replace('Dashboard');
-      }, 2000);
+      console.log("No device connected");
     }
 
     // Timeout global de sécurité (30 secondes)
@@ -186,8 +195,9 @@ const ConnexionScreen = ({ navigation, route }) => {
       if (timeoutTimer) clearTimeout(timeoutTimer);
       clearTimeout(globalTimeout);
     };
-  }, [device, connectToDevice, navigation, onConnectionResult, connectionAttempts, isConnecting]);
+  }, [device, connectToDevice, navigation, onConnectionResult, connectionAttempts, isConnecting, isConnected]);
 
+  // ==================== Détection de changements ==================== //
   // Surveiller les changements de statut de connexion
   useEffect(() => {
     if (isConnected() && connectedDevice && isConnecting) {
@@ -195,14 +205,15 @@ const ConnexionScreen = ({ navigation, route }) => {
       setIsConnecting(false);
       
       setTimeout(() => {
-        if (onConnectionResult) {
+        if (onConnectionResult && !hasNotified.current) {
+          hasNotified.current = true;
           onConnectionResult(true);
-        }
-        navigation.replace('Dashboard');
+        }        
       }, 1500);
     }
-  }, [isConnected, connectedDevice, navigation, onConnectionResult, isConnecting]);
+  }, [isConnected, connectedDevice, onConnectionResult, isConnecting]);
 
+  // ==================== Fonctionnalité de déconnexion ==================== //
   const cancelConnection = () => {
     Alert.alert(
       'Annuler la connexion',
@@ -225,18 +236,14 @@ const ConnexionScreen = ({ navigation, route }) => {
     );
   };
 
-  // Styles d'animation
-  const rotateInterpolate = rotateValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
-
+  // Style d'animation
   const animatedStyle = {
     transform: [
       { scale: pulseValue }
     ],
   };
 
+  // ==================== Rendu Principal ==================== //
   return (
     <View style={styles.container}>
       

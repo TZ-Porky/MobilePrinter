@@ -14,15 +14,17 @@ import {
 
 // Import du hook personnalisé
 import { useBluetoothService } from './hooks/useBluetoothService';
+// Import du nouveau panneau de diagnostic
+import DiagnosticPanel from './components/DiagnosticPanel';
 
 export default function BluetoothPrinterApp() {
   const [customText, setCustomText] = useState('Bonjour depuis React Native!');
+  const [showDiagnosticPanel, setShowDiagnosticPanel] = useState(false);
 
   // Utilisation du hook qui gère tout l'état Bluetooth
   const {
     // État
     devices,
-    // eslint-disable-next-line no-unused-vars
     connectedDevice,
     connectionStatus,
     deviceInfo,
@@ -59,227 +61,146 @@ export default function BluetoothPrinterApp() {
   const handleDisconnect = async () => {
     const success = await disconnect();
     if (success) {
-      Alert.alert('Info', 'Déconnecté de l\'imprimante');
+      Alert.alert('Succès', 'Déconnecté de l\'imprimante');
+    } else {
+      Alert.alert('Erreur', 'Impossible de se déconnecter');
     }
   };
 
-  const handlePrintText = async () => {
+  const handlePrint = async () => {
+    if (!isConnected()) {
+      Alert.alert('Erreur', 'Aucune imprimante connectée');
+      return;
+    }
     const success = await printText(customText);
     if (success) {
-      Alert.alert('Succès', 'Impression envoyée!');
+      // Le log est déjà géré par le service
     } else {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression');
+      Alert.alert('Erreur', 'Échec de l\'impression');
     }
   };
-
-  const handlePrintFormatted = async () => {
-    const success = await printText(customText, { 
-      align: 'center', 
-      bold: true, 
-      size: 'large' 
-    });
-    if (success) {
-      Alert.alert('Succès', 'Impression formatée envoyée!');
-    } else {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression');
-    }
+  
+  const handleOpenDiagnostic = () => {
+    setShowDiagnosticPanel(true);
   };
-
-  const printTicket = async () => {
-    const ticketLines = [
-      { text: 'TICKET DE CAISSE', options: { align: 'center', bold: true, size: 'large' }},
-      { text: '================================', options: {} },
-      { text: 'Date: ' + new Date().toLocaleDateString('fr-FR'), options: {} },
-      { text: 'Heure: ' + new Date().toLocaleTimeString('fr-FR'), options: {} },
-      { text: '--------------------------------', options: {} },
-      { text: 'Article 1..................1000 XCFA', options: {} },
-      { text: 'Article 2..................1550 XCFA', options: {} },
-      { text: 'Article 3...................875 XCFA', options: {} },
-      { text: '================================', options: {} },
-      { text: 'TOTAL:....................3425 XCFA', options: { bold: true } },
-      { text: '================================', options: {} },
-      { text: 'Merci de votre visite!', options: { align: 'center' } },
-      { text: 'À bientôt!', options: { align: 'center' } },
-    ];
-
-    try {
-      for (const line of ticketLines) {
-        const success = await printText(line.text, line.options);
-        if (!success) {
-          Alert.alert('Erreur', 'Erreur lors de l\'impression du ticket');
-          return;
-        }
-        // Petit délai entre chaque ligne pour éviter la surcharge
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-      
-      // Avancer le papier à la fin
-      await feedPaper();
-      Alert.alert('Succès', 'Ticket imprimé!');
-    } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression du ticket');
-    }
+  
+  const handleCloseDiagnostic = () => {
+    setShowDiagnosticPanel(false);
   };
+  
+  const renderLogItem = ({ item }) => {
+    const logStyle = item.type === 'success' ? styles.logSuccess :
+                     item.type === 'error' ? styles.logError :
+                     item.type === 'warning' ? styles.logWarning : styles.logInfo;
+    
+    const logIcon = item.type === 'success' ? '✅' :
+                    item.type === 'error' ? '❌' :
+                    item.type === 'warning' ? '⚠️' : 'ℹ️';
 
-  const renderDevice = ({ item }) => (
-    <TouchableOpacity
-      style={styles.deviceItem}
-      onPress={() => handleConnect(item)}
-    >
-      <View style={styles.deviceInfo}>
-        <Text style={styles.deviceName}>
-          {item.name || 'Appareil sans nom'}
+    return (
+      <View style={[styles.logItem, logStyle]}>
+        <Text style={styles.logText}>
+          <Text style={{ fontWeight: 'bold' }}>{logIcon} {item.timestamp}:</Text> {item.message}
         </Text>
-        <Text style={styles.deviceAddress}>{item.address}</Text>
-        {item.type && (
-          <Text style={styles.deviceType}>
-            Type: {item.type} | Classe: {item.class || 'Inconnue'}
-          </Text>
-        )}
       </View>
-      <View style={styles.connectButton}>
-        <Text style={styles.connectButtonText}>Connecter</Text>
-      </View>
-    </TouchableOpacity>
-  );
+    );
+  };
 
-  const renderLog = ({ item }) => (
-    <View style={[styles.logItem, styles[`log${item.type.charAt(0).toUpperCase() + item.type.slice(1)}`]]}>
-      <Text style={styles.logTimestamp}>{item.timestamp}</Text>
-      <Text style={styles.logMessage}>{item.message}</Text>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#2196F3" />
-      
+      <StatusBar barStyle="dark-content" />
+
+      {/* Titre et statut */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Imprimante Bluetooth</Text>
-        <Text style={styles.statusText}>{connectionStatus}</Text>
-        <View style={styles.statusIndicators}>
-          <Text style={[styles.indicator, isConnected() && styles.indicatorActive]}>
-            🔗 {isConnected() ? 'Connecté' : 'Déconnecté'}
-          </Text>
-        </View>
+        <Text style={styles.title}>Bluetooth Printer App</Text>
+        <Text style={styles.statusText}>
+          Statut : <Text style={isConnected() ? styles.connectedText : styles.disconnectedText}>{connectionStatus}</Text>
+        </Text>
       </View>
 
-      <ScrollView style={styles.content}>
-        {/* Section Informations Appareil */}
-        {deviceInfo && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Informations Appareil</Text>
-            <Text style={styles.infoText}>Classe: {deviceInfo.class || 'Non définie'}</Text>
-          </View>
-        )}
-
-        {/* Section Appareils */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Appareils jumelés</Text>
-            <TouchableOpacity
-              style={styles.refreshButton}
-              onPress={loadPairedDevices}
-              disabled={isScanning}
-            >
-              {isScanning ? (
-                <ActivityIndicator size="small" color="#2196F3" />
-              ) : (
-                <Text style={styles.refreshButtonText}>Actualiser</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-
+      {/* Liste des appareils */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Appareils couplés</Text>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.smallButton, { backgroundColor: '#FF5722' }]}
+            onPress={loadPairedDevices}
+            disabled={isScanning}
+          >
+            {isScanning ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.smallButtonText}>Rechercher</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={styles.listContainer}>
           <FlatList
             data={devices}
             keyExtractor={(item) => item.address}
-            renderItem={renderDevice}
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>
-                Aucun appareil jumelé trouvé
-              </Text>
-            }
-            style={styles.deviceList}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[styles.deviceItem, connectedDevice?.address === item.address && styles.connectedDeviceItem]}
+                onPress={() => handleConnect(item)}
+              >
+                <View>
+                  <Text style={styles.deviceName}>{item.name || 'Nom Inconnu'}</Text>
+                  <Text style={styles.deviceAddress}>{item.address}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            ListEmptyComponent={() => <Text style={styles.noDeviceText}>Aucun appareil trouvé</Text>}
           />
+        </ScrollView>
+      </View>
+
+      {/* Actions de l'imprimante */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Actions de l'imprimante</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setCustomText}
+          value={customText}
+          placeholder="Texte à imprimer"
+        />
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.actionButton} onPress={handlePrint} disabled={!isConnected()}>
+            <Text style={styles.actionButtonText}>Imprimer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.feedButton} onPress={feedPaper} disabled={!isConnected()}>
+            <Text style={styles.feedButtonText}>Avancer le papier</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Section Contrôles d'impression */}
-        {isConnected() && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Contrôles d'impression</Text>
-            
-            <TouchableOpacity
-              style={styles.disconnectButton}
-              onPress={handleDisconnect}
-            >
-              <Text style={styles.disconnectButtonText}>Se déconnecter</Text>
-            </TouchableOpacity>
-
-            <TextInput
-              style={styles.textInput}
-              value={customText}
-              onChangeText={setCustomText}
-              placeholder="Texte à imprimer..."
-              multiline
-            />
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handlePrintText}
-              >
-                <Text style={styles.actionButtonText}>📄 Imprimer Texte</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handlePrintFormatted}
-              >
-                <Text style={styles.actionButtonText}>📄 Centré & Gras</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={styles.ticketButton}
-                onPress={printTicket}
-              >
-                <Text style={styles.ticketButtonText}>🎫 Imprimer Ticket</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.feedButton}
-                onPress={feedPaper}
-              >
-                <Text style={styles.feedButtonText}>📃 Avancer Papier</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-
-        {/* Section Logs de diagnostic */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Logs de Diagnostic</Text>
-            <TouchableOpacity
-              style={styles.clearButton}
-              onPress={clearLogs}
-            >
-              <Text style={styles.clearButtonText}>Effacer</Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={logs}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderLog}
-            style={styles.logsList}
-            ListEmptyComponent={
-              <Text style={styles.emptyText}>Aucun log disponible</Text>
-            }
-          />
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.ticketButton} onPress={() => { /* TODO: Implement ticket printing */ }} disabled={!isConnected()}>
+            <Text style={styles.ticketButtonText}>Imprimer un ticket</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton} onPress={handleDisconnect} disabled={!isConnected()}>
+            <Text style={styles.actionButtonText}>Déconnecter</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.diagnosticButton} onPress={handleOpenDiagnostic}>
+            <Text style={styles.diagnosticButtonText}>Diagnostic</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.clearLogsButton} onPress={clearLogs}>
+            <Text style={styles.clearLogsButtonText}>Effacer les logs</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      
+      {/* Logs */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Logs</Text>
+        <ScrollView style={styles.logsList}>
+          {logs.slice().reverse().map((log, index) => renderLogItem({ item: log, index }))}
+        </ScrollView>
+      </View>
+
+      {/* Modal de diagnostic */}
+      <DiagnosticPanel visible={showDiagnosticPanel} onClose={handleCloseDiagnostic} />
+      
     </View>
   );
 }
@@ -287,154 +208,96 @@ export default function BluetoothPrinterApp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '500',
-    backgroundColor: '#f5f5f5',
+    padding: 20,
+    backgroundColor: '#f0f4f7',
   },
   header: {
-    backgroundColor: '#2196F3',
-    padding: 20,
-    height: '130',
+    marginBottom: 20,
+    alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 24,
+  title: {
+    fontSize: 28,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#333',
     marginBottom: 5,
   },
   statusText: {
-    fontSize: 14,
-    color: '#E3F2FD',
-    marginBottom: 10,
+    fontSize: 16,
+    color: '#555',
   },
-  statusIndicators: {
-    flexDirection: 'row',
-    gap: 10,
+  connectedText: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
   },
-  indicator: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    color: 'white',
-    fontSize: 12,
-  },
-  indicatorActive: {
-    backgroundColor: '#4CAF50',
-  },
-  content: {
-    height: '130',
-    padding: 20,
+  disconnectedText: {
+    color: '#F44336',
+    fontWeight: 'bold',
   },
   section: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
     marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 15,
+    elevation: 3,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: '#333',
-  },
-  refreshButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    backgroundColor: '#E3F2FD',
-    borderRadius: 20,
-  },
-  refreshButtonText: {
-    color: '#2196F3',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  clearButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    backgroundColor: '#FFF3E0',
-    borderRadius: 20,
-  },
-  clearButtonText: {
-    color: '#FF9800',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  deviceList: {
-    maxHeight: 300,
-  },
-  deviceItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
     marginBottom: 10,
-  },
-  deviceInfo: {
-    flex: 1,
-  },
-  deviceName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: 3,
-  },
-  deviceAddress: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 3,
-  },
-  deviceType: {
-    fontSize: 12,
-    color: '#999',
-  },
-  connectButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-  connectButtonText: {
-    color: 'white',
-    fontWeight: '500',
-  },
-  disconnectButton: {
-    backgroundColor: '#f44336',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-    alignItems: 'center',
-  },
-  disconnectButtonText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    fontSize: 16,
-    maxHeight: 100,
-    textAlignVertical: 'top',
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  smallButton: {
+    flex: 1,
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  smallButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  listContainer: {
+    maxHeight: 150,
+  },
+  deviceItem: {
+    padding: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  connectedDeviceItem: {
+    backgroundColor: '#e8f5e9',
+    borderColor: '#4CAF50',
+  },
+  deviceName: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+  },
+  deviceAddress: {
+    fontSize: 12,
+    color: '#777',
+  },
+  noDeviceText: {
+    textAlign: 'center',
+    color: '#999',
+    fontStyle: 'italic',
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+    color: '#333',
   },
   actionButton: {
     flex: 0.48,
@@ -442,6 +305,11 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   actionButtonText: {
     color: 'white',
@@ -454,6 +322,11 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   ticketButtonText: {
     color: 'white',
@@ -466,57 +339,77 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   feedButtonText: {
     color: 'white',
     fontWeight: '600',
     fontSize: 14,
   },
-  infoText: {
+  diagnosticButton: {
+    flex: 0.48,
+    backgroundColor: '#1E90FF',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  diagnosticButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  clearLogsButton: {
+    flex: 0.48,
+    backgroundColor: '#607D8B',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  clearLogsButtonText: {
+    color: 'white',
+    fontWeight: '600',
     fontSize: 14,
-    color: '#333',
-    marginBottom: 5,
-    fontFamily: 'monospace',
   },
   logsList: {
-    maxHeight: 400,
+    maxHeight: 250,
   },
   logItem: {
     padding: 10,
-    borderRadius: 5,
-    marginBottom: 5,
+    borderRadius: 8,
+    marginBottom: 8,
     borderLeftWidth: 4,
   },
-  logInfo: {
-    backgroundColor: '#f8f9fa',
-    borderLeftColor: '#2196F3',
+  logText: {
+    fontSize: 12,
+    color: '#333',
   },
   logSuccess: {
-    backgroundColor: '#f1f8e9',
+    backgroundColor: '#e8f5e9',
     borderLeftColor: '#4CAF50',
   },
   logError: {
     backgroundColor: '#ffebee',
-    borderLeftColor: '#f44336',
+    borderLeftColor: '#F44336',
   },
   logWarning: {
-    backgroundColor: '#fff8e1',
-    borderLeftColor: '#FF9800',
+    backgroundColor: '#fffde7',
+    borderLeftColor: '#FFC107',
   },
-  logTimestamp: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 2,
+  logInfo: {
+    backgroundColor: '#e3f2fd',
+    borderLeftColor: '#2196F3',
   },
-  logMessage: {
-    fontSize: 14,
-    color: '#333',
-    fontFamily: 'monospace',
-  },
-  emptyText: {
-    textAlign: 'center',
-    color: '#999',
-    fontStyle: 'italic',
-    padding: 20,
-  },
-})
+});

@@ -5,33 +5,34 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Modal,
-  StyleSheet,
   BackHandler,
   Alert,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import DashboardScreenStyle from './DashboardScreenStyle';
-import { useBluetoothService } from '../hooks/useBluetoothService';
+import BottomModal from '../components/BottomModal';
+import { useBluetoothContext } from '../hooks/useBluetoothContext';
 
 const DashboardScreen = ({ navigation }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [customText, setCustomText] = useState('');
+  // ==================== Variables ==================== //
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [customText, setCustomText] = useState('Bonjour React Native');
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // ==================== Hooks ==================== //
   // Hook Bluetooth
   const {
     connectedDevice,
-    connectionStatus,
     deviceInfo,
     disconnect,
     printText,
     feedPaper,
     isConnected,
-  } = useBluetoothService();
+  } = useBluetoothContext();
 
+  // ==================== Retour Physique ==================== //
   useEffect(() => {
     const backAction = () => {
       Alert.alert(
@@ -63,47 +64,162 @@ const DashboardScreen = ({ navigation }) => {
     return () => backHandler.remove();
   }, [navigation, disconnect]);
 
-  // Vérifie si l'appareil est encore connecté
+  // ==================== Surveillance de la déconnexion ==================== //
   useEffect(() => {
-    if (!isConnected()) {
-      // Si plus connecté, retourner à l'accueil
-      navigation.replace('Home');
-    }
-  }, [isConnected, navigation]);
+    let connectionCheckInterval;
 
+    const checkConnection = async () => {
+      try {
+        if (connectedDevice) {
+          // Tenter de vérifier si l'appareil est toujours connecté
+          const stillConnected = await connectedDevice.isConnected();
+
+          if (!stillConnected) {
+            console.log('Connexion perdue détectée');
+            // Forcer la déconnexion dans le service
+            await disconnect();
+
+            Alert.alert(
+              'Connexion perdue',
+              "L'imprimante a été déconnectée.",
+              [
+                {
+                  text: 'OK',
+                  onPress: () => navigation.replace('Home'),
+                },
+              ],
+            );
+          }
+        } else if (!isConnected()) {
+          // Si plus de device connecté du tout
+          navigation.replace('Home');
+        }
+      } catch (error) {
+        console.log('Erreur lors de la vérification de connexion:', error);
+        // En cas d'erreur, considérer comme déconnecté
+        await disconnect();
+        Alert.alert(
+          'Connexion perdue',
+          "Impossible de communiquer avec l'imprimante.",
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.replace('Home'),
+            },
+          ],
+        );
+      }
+    };
+
+    // Vérifier toutes les 3 secondes
+    connectionCheckInterval = setInterval(checkConnection, 3000);
+
+    return () => {
+      if (connectionCheckInterval) {
+        clearInterval(connectionCheckInterval);
+      }
+    };
+  }, [connectedDevice, isConnected, navigation, disconnect]);
+
+  // ==================== Fonctionnalités du menu ==================== //
   // Ouvre le menu
   const openMenu = () => {
-    setIsVisible(true);
+    setIsMenuVisible(true);
   };
 
   // Ferme le menu
   const closeMenu = () => {
-    setIsVisible(false);
+    setIsMenuVisible(false);
   };
 
   // Déconnecte de l'appareil
   const handleDisconnect = async () => {
     setIsProcessing(true);
     try {
-      const success = await disconnect();
-      if (success) {
-        Alert.alert('Info', 'Déconnecté de l\'imprimante', [
-          { text: 'OK', onPress: () => navigation.replace('Home') }
-        ]);
-      } else {
-        Alert.alert('Erreur', 'Erreur lors de la déconnexion');
-      }
+
+      // Tenter la déconnexion normale
+      await disconnect();
+
+      // Même en cas d'échec de la déconnexion, forcer le retour à l'accueil
+      Alert.alert('Info', "Déconnecté de l'imprimante", [
+        { text: 'OK', onPress: () => navigation.replace('Home') },
+      ]);
+
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de la déconnexion');
+      console.log('Erreur lors de la déconnexion:', error);
+      // En cas d'erreur, forcer le retour à l'accueil
+      Alert.alert('Info', 'Déconnexion forcée - Retour à l\'accueil', [
+        { text: 'OK', onPress: () => navigation.replace('Home') }
+      ]);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  // Navigation vers scan QR (fonctionnalité future)
+  const handleQRPrint = () => {
+    navigation.navigate('CodePrint');
+    setIsMenuVisible(false);
+  };
+
+  // Déconnexion d'urgence (bouton de secours)
+  const handleEmergencyDisconnect = () => {
+    Alert.alert(
+      'Déconnexion forcée',
+      'Forcer la déconnexion et retourner à l\'accueil ? Utilisez ceci si l\'imprimante ne répond plus.',
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel'
+        },
+        {
+          text: 'Forcer',
+          style: 'destructive',
+          onPress: async () => {
+            setIsProcessing(true);
+            try {
+              // Nettoyer l'état de connexion
+              await disconnect();
+            } catch (error) {
+              console.log('Erreur lors de la déconnexion forcée:', error);
+            } finally {
+              setIsProcessing(false);
+              navigation.replace('Home');
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  // Menu des options
+  const menuOptions = [
+    {
+      label: "Déconnecter l'imprimante " + connectedDevice?.name,
+      onPress: handleDisconnect,
+    },
+    { label: 'Imprimer un Code QR', onPress: handleQRPrint },
+    {
+      label: "Dépanner l'imprimante",
+      onPress: () =>
+        Alert.alert('Comming Next Udpate', "En attente d'implémentation"),
+    },
+    { label: 'Déconnexion (Urgence)', onPress: handleEmergencyDisconnect },
+  ];
+
+  // ==================== Fonctionnalités de l'imprimante ==================== //
   // Imprime le texte saisi
   const handlePrintText = async () => {
     if (!customText.trim()) {
       Alert.alert('Attention', 'Veuillez saisir un texte à imprimer');
+      return;
+    }
+
+    if (!isConnected()) {
+      Alert.alert(
+        'Déconnecté',
+        "Aucune connection a l'imprimante n'a été détectée.",
+      );
       return;
     }
 
@@ -112,18 +228,17 @@ const DashboardScreen = ({ navigation }) => {
       const success = await printText(customText);
       if (success) {
         Alert.alert('Succès', 'Texte imprimé avec succès!');
-        setCustomText(''); // Vider le champ après impression
       } else {
-        Alert.alert('Erreur', 'Erreur lors de l\'impression');
+        Alert.alert('Erreur', "Erreur lors de l'impression");
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression');
+      Alert.alert('Erreur', "Erreur lors de l'impression");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Imprime le texte centré et en gras
+  // == Imprime le texte centré et en gras ==
   const handlePrintFormattedText = async () => {
     if (!customText.trim()) {
       Alert.alert('Attention', 'Veuillez saisir un texte à imprimer');
@@ -132,39 +247,51 @@ const DashboardScreen = ({ navigation }) => {
 
     setIsProcessing(true);
     try {
-      const success = await printText(customText, { 
-        align: 'center', 
-        bold: true, 
-        size: 'large' 
+      const success = await printText(customText, {
+        align: 'center',
+        bold: true,
+        size: 'large',
       });
       if (success) {
         Alert.alert('Succès', 'Texte formaté imprimé avec succès!');
         setCustomText('');
       } else {
-        Alert.alert('Erreur', 'Erreur lors de l\'impression');
+        Alert.alert('Erreur', "Erreur lors de l'impression");
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression');
+      Alert.alert('Erreur', "Erreur lors de l'impression");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Imprime un ticket de test
+  // == Imprime un ticket de test ==
   const handlePrintTestTicket = async () => {
     setIsProcessing(true);
     try {
       const ticketLines = [
-        { text: 'TICKET DE TEST', options: { align: 'center', bold: true, size: 'large' }},
+        {
+          text: 'TICKET DE TEST',
+          options: { align: 'center', bold: true, size: 'large' },
+        },
         { text: '================================', options: {} },
-        { text: 'Date: ' + new Date().toLocaleDateString('fr-FR'), options: {} },
-        { text: 'Heure: ' + new Date().toLocaleTimeString('fr-FR'), options: {} },
+        {
+          text: 'Date: ' + new Date().toLocaleDateString('fr-FR'),
+          options: {},
+        },
+        {
+          text: 'Heure: ' + new Date().toLocaleTimeString('fr-FR'),
+          options: {},
+        },
         { text: '--------------------------------', options: {} },
         { text: 'Article 1..................1000 FCFA', options: {} },
         { text: 'Article 2..................1550 FCFA', options: {} },
         { text: 'Article 3...................875 FCFA', options: {} },
         { text: '================================', options: {} },
-        { text: 'TOTAL:....................3425 FCFA', options: { bold: true } },
+        {
+          text: 'TOTAL:....................3425 FCFA',
+          options: { bold: true },
+        },
         { text: '================================', options: {} },
         { text: 'Merci de votre visite!', options: { align: 'center' } },
         { text: 'À bientôt!', options: { align: 'center' } },
@@ -173,17 +300,16 @@ const DashboardScreen = ({ navigation }) => {
       for (const line of ticketLines) {
         const success = await printText(line.text, line.options);
         if (!success) {
-          throw new Error('Erreur lors de l\'impression d\'une ligne');
+          throw new Error("Erreur lors de l'impression d'une ligne");
         }
         // Petit délai entre chaque ligne
         await new Promise(resolve => setTimeout(resolve, 100));
       }
-      
-      // Avancer le papier à la fin
+
       await feedPaper();
       Alert.alert('Succès', 'Ticket de test imprimé!');
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression du ticket');
+      Alert.alert('Erreur', "Erreur lors de l'impression du ticket");
     } finally {
       setIsProcessing(false);
     }
@@ -197,57 +323,63 @@ const DashboardScreen = ({ navigation }) => {
       if (success) {
         Alert.alert('Info', 'Papier avancé');
       } else {
-        Alert.alert('Erreur', 'Erreur lors de l\'avancement du papier');
+        Alert.alert('Erreur', "Erreur lors de l'avancement du papier");
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'avancement du papier');
+      Alert.alert('Erreur', "Erreur lors de l'avancement du papier");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Navigation vers scan QR (fonctionnalité future)
-  const handleQRPrint = () => {
-    Alert.alert('Info', 'Fonctionnalité à venir', [
-      { text: 'OK', onPress: closeMenu }
-    ]);
-  };
-
+  // ==================== Rendu principal ==================== //
   return (
-    <View style={styles.container}>
+    <View style={DashboardScreenStyle.container}>
       {/* En-tête */}
-      <View style={styles.headerBar}>
-        <View style={styles.headerTop}>
-          <View style={styles.logo}>
+      <View style={DashboardScreenStyle.headerBar}>
+        <View style={DashboardScreenStyle.headerTop}>
+          <View style={DashboardScreenStyle.logo}>
             <Image
               source={require('../assets/images/Logo.png')}
-              style={styles.logoImage}
+              style={DashboardScreenStyle.logoImage}
             />
-            <Text style={styles.logoText}>MOBILE{'\n'}PRINTER</Text>
+            <Text style={DashboardScreenStyle.logoText}>
+              MOBILE{'\n'}PRINTER
+            </Text>
           </View>
           <TouchableOpacity onPress={openMenu}>
             <Image source={require('../assets/images/Settings.png')} />
           </TouchableOpacity>
         </View>
 
-        <View style={styles.headerBottom}>
+        <View style={DashboardScreenStyle.headerBottom}>
           {/* Statut de l'appareil */}
-          <View style={[styles.indicator, { backgroundColor: isConnected() ? '#0BCE22' : '#F44336' }]} />
-          <Text style={styles.deviceLabel}>
+          <View
+            style={[
+              DashboardScreenStyle.indicator,
+              { backgroundColor: isConnected() ? '#0BCE22' : '#F44336' },
+            ]}
+          />
+          <Text style={DashboardScreenStyle.deviceLabel}>
             {isConnected() ? (
-              <>Connecté à <Text style={styles.deviceName}>
-                {deviceInfo?.name || connectedDevice?.name || 'Appareil Bluetooth'}
-              </Text></>
+              <>
+                Connecté à{' '}
+                <Text style={DashboardScreenStyle.deviceName}>
+                  {deviceInfo?.name ||
+                    connectedDevice?.name ||
+                    'Appareil Bluetooth'}
+                </Text>
+              </>
             ) : (
-              <Text style={styles.deviceName}>Déconnecté</Text>
+              <Text style={DashboardScreenStyle.deviceName}>Déconnecté</Text>
             )}
           </Text>
         </View>
       </View>
 
       {/* Corps */}
-      <ScrollView style={styles.content}>
-        <View style={styles.section}>
+      <ScrollView style={DashboardScreenStyle.content}>
+        <View style={DashboardScreenStyle.section}>
           {/* Champ de texte */}
           <TextInput
             style={DashboardScreenStyle.textInput}
@@ -263,7 +395,8 @@ const DashboardScreen = ({ navigation }) => {
             <TouchableOpacity
               style={[
                 DashboardScreenStyle.actionButton,
-                (isProcessing || !isConnected()) && styles.disabledButton
+                (isProcessing || !isConnected()) &&
+                  DashboardScreenStyle.disabledButton,
               ]}
               onPress={handlePrintText}
               disabled={isProcessing || !isConnected()}
@@ -280,7 +413,8 @@ const DashboardScreen = ({ navigation }) => {
             <TouchableOpacity
               style={[
                 DashboardScreenStyle.actionButton,
-                (isProcessing || !isConnected()) && styles.disabledButton
+                (isProcessing || !isConnected()) &&
+                  DashboardScreenStyle.disabledButton,
               ]}
               onPress={handlePrintFormattedText}
               disabled={isProcessing || !isConnected()}
@@ -297,11 +431,12 @@ const DashboardScreen = ({ navigation }) => {
 
           {/* Boutons ticket et avancement papier */}
           <View style={DashboardScreenStyle.buttonRow}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[
                 DashboardScreenStyle.ticketButton,
-                (isProcessing || !isConnected()) && styles.disabledButton
-              ]} 
+                (isProcessing || !isConnected()) &&
+                  DashboardScreenStyle.disabledButton,
+              ]}
               onPress={handlePrintTestTicket}
               disabled={isProcessing || !isConnected()}
             >
@@ -314,11 +449,12 @@ const DashboardScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[
                 DashboardScreenStyle.feedButton,
-                (isProcessing || !isConnected()) && styles.disabledButton
-              ]} 
+                (isProcessing || !isConnected()) &&
+                  DashboardScreenStyle.disabledButton,
+              ]}
               onPress={handleFeedPaper}
               disabled={isProcessing || !isConnected()}
             >
@@ -334,9 +470,10 @@ const DashboardScreen = ({ navigation }) => {
 
           {/* Statut de connexion */}
           {!isConnected() && (
-            <View style={styles.warningContainer}>
-              <Text style={styles.warningText}>
-                ⚠️ Imprimante déconnectée. Les fonctions d'impression sont désactivées.
+            <View style={DashboardScreenStyle.warningContainer}>
+              <Text style={DashboardScreenStyle.warningText}>
+                ⚠️ Imprimante déconnectée. Les fonctions d'impression sont
+                désactivées.
               </Text>
             </View>
           )}
@@ -344,146 +481,13 @@ const DashboardScreen = ({ navigation }) => {
       </ScrollView>
 
       {/* Menu des options */}
-      <Modal transparent={true} visible={isVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.menuContainer}>
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={handleDisconnect}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <ActivityIndicator size="small" color="#F06317" />
-              ) : (
-                <Text style={{ color: '#F06317' }}>Déconnecter l'appareil</Text>
-              )}
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={handleQRPrint}>
-              <Text>Imprimer par code QR</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={closeMenu}>
-              <Text>Fermer</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <BottomModal
+        isVisible={isMenuVisible}
+        onClose={closeMenu}
+        options={menuOptions}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f8f8f8',
-  },
-
-  // ==================== En tête ====================== //
-  headerBar: {
-    height: 100,
-    backgroundColor: '#2196F3',
-    display: 'flex',
-    gap: 10,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    elevation: 5,
-  },
-  headerTop: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerBottom: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 5,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-
-  // ==================== Logo ====================== //
-  logo: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  logoImage: {
-    height: 33,
-    width: 33,
-  },
-  logoText: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#fff',
-  },
-  indicator: {
-    height: 8,
-    width: 8,
-    borderRadius: 4,
-  },
-  deviceLabel: {
-    fontSize: 15,
-    color: '#fff',
-  },
-  deviceName: {
-    fontWeight: 'bold',
-  },
-
-  // ==================== Corps ====================== //
-  content: {
-    flex: 1,
-    padding: 20,
-  },
-  section: {
-    flex: 1,
-  },
-
-  // ==================== États ====================== //
-  disabledButton: {
-    opacity: 0.5,
-  },
-  warningContainer: {
-    backgroundColor: '#FFF3CD',
-    borderColor: '#FFEAA7',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 15,
-    marginTop: 20,
-  },
-  warningText: {
-    color: '#856404',
-    textAlign: 'center',
-    fontSize: 14,
-  },
-
-  // ==================== Menu ====================== //
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  menuContainer: {
-    height: 200,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-});
 
 export default DashboardScreen;

@@ -1,9 +1,12 @@
-import React from 'react'
-import AppNavigator from './src/navigation/AppNavigator'
+import React from 'react';
+import AppNavigator from './src/navigation/AppNavigator';
+import BluetoothProvider from './src/providers/BluetoothProvider';
 
 const App = () => {
   return (
-    <AppNavigator />
+    <BluetoothProvider>
+      <AppNavigator />
+    </BluetoothProvider>
   )
 }
 

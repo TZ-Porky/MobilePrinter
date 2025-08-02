@@ -45,9 +45,37 @@ export const useBluetoothService = () => {
   const handleLogsChange = useCallback((newLogs) => {
     setLogs(newLogs);
   }, []);
+  
+  // ==========================================
+  // DIAGNOSTICS
+  // ==========================================
+  const runFullDiagnostic = async () => {
+    return await bluetoothService.runFullDiagnostic();
+  };
+  
+  const checkPrinterStatus = async () => {
+    return await bluetoothService.checkPrinterStatus();
+  };
+  
+  const checkPaperStatus = async () => {
+    return await bluetoothService.checkPaperStatus();
+  };
+  
+  const attemptPrinterRecovery = async () => {
+    return await bluetoothService.attemptPrinterRecovery();
+  };
+  
+  const forcePrintTest = async () => {
+    return await bluetoothService.forcePrintTest();
+  };
+  
+  const emergencyReset = async () => {
+    return await bluetoothService.emergencyReset();
+  };
+
 
   useEffect(() => {
-    // S'abonner une seule fois
+    // S'abonner aux services au montage
     const unsubscribes = [
       bluetoothService.subscribe('devices', handleDevicesChange),
       bluetoothService.subscribe('connection', handleConnectionChange),
@@ -58,6 +86,15 @@ export const useBluetoothService = () => {
     ];
 
     unsubscribesRef.current = unsubscribes;
+
+    // Initialisation et chargement des appareils au démarrage de l'application
+    const initialize = async () => {
+      const success = await bluetoothService.initializeBluetooth();
+      if (success) {
+        await bluetoothService.loadPairedDevices();
+      }
+    };
+    initialize();
 
     // Initialiser les données actuelles
     setDevices(bluetoothService.getDevices());
@@ -71,7 +108,7 @@ export const useBluetoothService = () => {
       unsubscribesRef.current.forEach(unsubscribe => unsubscribe());
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Dépendances vides - ne s'exécute qu'une fois
+  }, []);
 
   // Actions mémorisées
   const actions = useRef({
@@ -84,6 +121,14 @@ export const useBluetoothService = () => {
     clearLogs: () => logService.clearLogs(),
     isConnected: () => bluetoothService.isConnected(),
     isBluetoothEnabled: () => bluetoothService.isBluetoothEnabled(),
+    
+    // Actions de diagnostic
+    runFullDiagnostic,
+    checkPrinterStatus,
+    checkPaperStatus,
+    attemptPrinterRecovery,
+    forcePrintTest,
+    emergencyReset,
   });
 
   return {

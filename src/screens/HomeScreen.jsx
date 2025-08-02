@@ -6,31 +6,34 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  Modal,
   FlatList,
   ActivityIndicator,
   Alert,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import DeviceCard from '../components/DeviceCard';
-import { useBluetoothService } from '../hooks/useBluetoothService';
+import BottomModal from '../components/BottomModal';
+import { useBluetoothContext } from '../hooks/useBluetoothContext';
 
-function HomeScreen({navigation}) {
-  const [isVisible, setIsVisible] = useState(false);
+function HomeScreen({ navigation }) {
+
+  // ==================== Variables ====================== //
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
 
+  // ==================== Hooks ====================== //
   // Hook Bluetooth
   const {
     devices,
     isScanning,
-    connectionStatus,
     initializeBluetooth,
     loadPairedDevices,
-    connectToDevice,
     isBluetoothEnabled,
     isConnected,
-  } = useBluetoothService();
+    disconnect,
+  } = useBluetoothContext();
 
+  // ==================== Initialisation ====================== //
   // Initialisation au chargement du composant
   useEffect(() => {
     const initialize = async () => {
@@ -39,25 +42,31 @@ function HomeScreen({navigation}) {
         await loadPairedDevices();
       }
     };
-    
+
     initialize();
   }, [initializeBluetooth, loadPairedDevices]);
 
-  // Redirection automatique si déjà connecté
+  // Déconnect l'appareil connecté
   useEffect(() => {
-    if (isConnected()) {
-      navigation.navigate('Dashboard');
+    const disconnectDevice = async () => {
+      if (isConnected()) {
+        await disconnect();
+        console.log("Appareil déconnecté");
+      }
     }
-  }, [isConnected, navigation]);
 
+    disconnectDevice();
+  }, [isConnected, disconnect])
+
+  // ==================== Fonctionnalités du Menu ====================== //
   // Ouvre le menu
   const openMenu = () => {
-    setIsVisible(true);
+    setIsMenuVisible(true);
   };
 
   // Ferme le menu
   const closeMenu = () => {
-    setIsVisible(false);
+    setIsMenuVisible(false);
   };
 
   // Active le Bluetooth
@@ -69,10 +78,10 @@ function HomeScreen({navigation}) {
         Alert.alert('Succès', 'Bluetooth activé');
         await loadPairedDevices();
       } else {
-        Alert.alert('Erreur', 'Impossible d\'activer le Bluetooth');
+        Alert.alert('Erreur', "Impossible d'activer le Bluetooth");
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'activation du Bluetooth');
+      Alert.alert('Erreur', "Erreur lors de l'activation du Bluetooth");
     }
   };
 
@@ -80,50 +89,50 @@ function HomeScreen({navigation}) {
   const handleRefresh = async () => {
     closeMenu();
     try {
-      await loadPairedDevices();
+      if (isBluetoothEnabled()) {
+        await loadPairedDevices();
+      }
       Alert.alert('Info', 'Liste des appareils actualisée');
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'actualisation');
+      Alert.alert('Erreur', "Erreur lors de l'actualisation");
     }
   };
 
+  // Menu des options
+  const menuOptions = [
+    { label: isBluetoothEnabled ? "Activer le bluetooth" : "Reinitialiser le bluetooth", onPress: handleEnableBluetooth},
+    { label: "Actualiser", onPress: handleRefresh},
+    { label: "Reconnexion Automatique", onPress: ()=>Alert.alert("Comming Next Udpate","Reconnexion automatique disponible prochainement")},
+  ]
+
+  // ==================== Fonctionnalités de connexion ====================== //
   // Connecte un appareil
-  const handleConnectDevice = async (device) => {
+  const handleConnectDevice = async device => {
     if (!device) {
       Alert.alert('Erreur', 'Aucun appareil sélectionné');
       return;
     }
 
-    setIsConnecting(true);
-    
-    // Simuler l'écran de connexion
-    navigation.navigate('Connexion', { 
-      device: device,
-      onConnectionResult: (success) => {
-        setIsConnecting(false);
-        if (success) {
-          navigation.navigate('Dashboard');
-        }
-      }
-    });
-
     try {
-      const success = await connectToDevice(device);
-      setIsConnecting(false);
-      
-      if (success) {
-        Alert.alert('Succès', `Connecté à ${device.name || device.address}`, [
-          { text: 'OK', onPress: () => navigation.navigate('Dashboard') }
-        ]);
-      } else {
-        Alert.alert('Erreur', 'Impossible de se connecter à l\'imprimante');
-      }
+      setIsConnecting(true);
+
+      // Simuler l'écran de connexion
+      navigation.navigate('Connexion', {
+        device: device,
+        onConnectionResult: success => {
+          setIsConnecting(false);
+          if (success) {
+            navigation.navigate('Dashboard');
+          }
+        },
+      });
     } catch (error) {
       setIsConnecting(false);
       Alert.alert('Erreur', 'Erreur lors de la connexion');
     }
   };
 
+  // ==================== Rendu des composants ====================== //
   // Rendu d'un appareil dans la liste
   const renderDevice = ({ item }) => (
     <View style={styles.deviceContainer}>
@@ -144,6 +153,7 @@ function HomeScreen({navigation}) {
     </View>
   );
 
+  // ==================== Rendu Principal ====================== //
   return (
     <View style={styles.container}>
       {/* En-tête */}
@@ -165,17 +175,21 @@ function HomeScreen({navigation}) {
         {/* Statut Bluetooth */}
         <View style={styles.statusContainer}>
           <View style={styles.statusRow}>
-            <View style={[
-              styles.statusIndicator, 
-              { backgroundColor: isBluetoothEnabled() ? '#4CAF50' : '#F44336' }
-            ]} />
+            <View
+              style={[
+                styles.statusIndicator,
+                {
+                  backgroundColor: isBluetoothEnabled() ? '#4CAF50' : '#F44336',
+                },
+              ]}
+            />
             <Text style={styles.statusText}>
               Bluetooth: {isBluetoothEnabled() ? 'Activé' : 'Désactivé'}
             </Text>
           </View>
         </View>
 
-        {/* Liste des appareils */}
+        {/* | ====================| Liste des appareils |==================| */}
         <View style={styles.devicesSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Appareils jumelés</Text>
@@ -190,9 +204,7 @@ function HomeScreen({navigation}) {
             </View>
           ) : devices.length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                Aucun appareil jumelé trouvé
-              </Text>
+              <Text style={styles.emptyText}>Aucun appareil jumelé trouvé</Text>
               <Text style={styles.emptySubText}>
                 Jumelez d'abord votre imprimante dans les paramètres Bluetooth
               </Text>
@@ -200,8 +212,8 @@ function HomeScreen({navigation}) {
           ) : (
             <FlatList
               data={devices}
-              keyExtractor={(item) => item.address}
-              renderItem={renderDevice}
+              keyExtractor={item => item.address}
+              renderItem={isBluetoothEnabled() ? renderDevice : null}
               horizontal={false}
               numColumns={2}
               columnWrapperStyle={styles.deviceRow}
@@ -211,42 +223,12 @@ function HomeScreen({navigation}) {
         </View>
       </ScrollView>
 
-      {/* Menu des options */}
-      <Modal transparent={true} visible={isVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.menuContainer}>
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={handleEnableBluetooth}
-              disabled={isScanning}
-            >
-              {isScanning ? (
-                <ActivityIndicator size="small" color="#3BC2E8" />
-              ) : (
-                <Text style={{color:'#3BC2E8'}}>
-                  {isBluetoothEnabled() ? 'Réinitialiser Bluetooth' : 'Activer le Bluetooth'}
-                </Text>
-              )}
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={handleRefresh}
-              disabled={isScanning}
-            >
-              {isScanning ? (
-                <ActivityIndicator size="small" color="#3BC2E8" />
-              ) : (
-                <Text style={{color:'#3BC2E8'}}>Actualiser</Text>
-              )}
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.menuItem} onPress={closeMenu}>
-              <Text>Fermer</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {/* ============= Menu des options ============ */}
+      <BottomModal 
+        isVisible={isMenuVisible}
+        onClose={closeMenu}
+        options={menuOptions}
+      />
     </View>
   );
 }
@@ -402,31 +384,6 @@ const styles = StyleSheet.create({
   // ==================== États ====================== //
   disabledButton: {
     opacity: 0.5,
-  },
-
-  // ==================== Menu ====================== //
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  menuContainer: {
-    height: 200,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 10,
-    backgroundColor: '#fff',
-    padding: 20,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
   },
 });
 
