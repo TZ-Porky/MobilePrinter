@@ -13,29 +13,37 @@ import QRCode from 'react-native-qrcode-svg';
 import { useBluetoothContext } from '../hooks/useBluetoothContext';
 
 const QRCodePrintScreen = ({ navigation }) => {
+  // ==================== Variables ====================== //
   const [qrData, setQrData] = useState('');
   const [qrSize, setQrSize] = useState('200');
+  const [errorCorrection, setErrorCorrection] = useState('M'); // Niveau de correction d'erreur (L, M, Q, H)
   const [isProcessing, setIsProcessing] = useState(false);
   const qrRef = useRef(null);
 
-  const { printText, isConnected } = useBluetoothContext();
+  const { printText, isConnected, printQRCode } = useBluetoothContext();
 
+  // ==================== Données Prédéfinies ====================== //
   // Types de données prédéfinies
   const dataTemplates = [
     { label: 'URL', placeholder: 'https://example.com', prefix: '' },
     { label: 'Email', placeholder: 'email@example.com', prefix: 'mailto:' },
     { label: 'Téléphone', placeholder: '+237123456789', prefix: 'tel:' },
     { label: 'SMS', placeholder: '+237123456789', prefix: 'sms:' },
-    { label: 'WiFi', placeholder: 'SSID;PASSWORD;WPA', prefix: 'WIFI:T:WPA;S:' },
+    {
+      label: 'WiFi',
+      placeholder: 'SSID;PASSWORD;WPA',
+      prefix: 'WIFI:T:WPA;S:',
+    },
     { label: 'Texte simple', placeholder: 'Votre texte ici', prefix: '' },
   ];
 
   const [selectedTemplate, setSelectedTemplate] = useState(dataTemplates[0]);
 
+  // ==================== Fonctionnalités du QRCode ====================== //
   // Génère les données QR selon le template sélectionné
   const generateQRData = () => {
     if (!qrData.trim()) return '';
-    
+
     if (selectedTemplate.label === 'WiFi') {
       // Format WiFi: WIFI:T:WPA;S:SSID;P:PASSWORD;;
       const parts = qrData.split(';');
@@ -44,12 +52,12 @@ const QRCodePrintScreen = ({ navigation }) => {
       }
       return qrData;
     }
-    
+
     return selectedTemplate.prefix + qrData;
   };
 
   // Convertit le QR code en données imprimables
-  const printQRCode = async () => {
+  const HandlePrintQRCode = async () => {
     if (!qrData.trim()) {
       Alert.alert('Attention', 'Veuillez saisir des données pour le QR code');
       return;
@@ -63,28 +71,40 @@ const QRCodePrintScreen = ({ navigation }) => {
     setIsProcessing(true);
 
     try {
-      // Obtenir les données SVG du QR code
-      qrRef.current?.toDataURL((dataURL) => {
-        printQRCodeData(dataURL);
+      const success = await printQRCode(qrData, {
+        size: qrSize,
+        errorCorrection: errorCorrection,
+        align: 'center', // Vous pouvez choisir 'left', 'center', 'right'
       });
+      if (success) {
+        Alert.alert('Succès', "Code QR envoyé à l'imprimante.");
+      } else {
+        Alert.alert('Erreur', "Échec de l'impression du code QR.");
+      }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de la génération du QR code');
+      console.error('Erreur lors de l\'impression du QR Code:', error);
+      Alert.alert('Erreur', `Une erreur est survenue lors de l'impression: ${error.message}`);
+    } finally {
       setIsProcessing(false);
     }
   };
 
   // Imprime le QR code avec les informations
-  const printQRCodeData = async (base64Data) => {
+  const printQRCodeData = async base64Data => {
     try {
       const qrCodeData = generateQRData();
-      
+
       // Impression du header
-      await printText('QR CODE', { align: 'center', bold: true, size: 'large' });
+      await printText('QR CODE', {
+        align: 'center',
+        bold: true,
+        size: 'large',
+      });
       await printText('================================', {});
-      
+
       // Impression du type de données
       await printText(`Type: ${selectedTemplate.label}`, {});
-      
+
       // Impression des données
       if (qrCodeData.length > 30) {
         // Si les données sont longues, les couper en plusieurs lignes
@@ -96,27 +116,26 @@ const QRCodePrintScreen = ({ navigation }) => {
       } else {
         await printText(`Données: ${qrCodeData}`, {});
       }
-      
+
       await printText('--------------------------------', {});
-      
-      // Note: Pour imprimer l'image QR code réelle, vous auriez besoin 
-      // d'une fonction spéciale dans votre service Bluetooth qui peut 
+
+      // Note: Pour imprimer l'image QR code réelle, vous auriez besoin
+      // d'une fonction spéciale dans votre service Bluetooth qui peut
       // traiter les images. Pour l'instant, on imprime juste un placeholder.
       await printText('[QR CODE IMAGE]', { align: 'center' });
       await printText('(Taille: ' + qrSize + 'px)', { align: 'center' });
-      
+
       await printText('--------------------------------', {});
       await printText('Scannez ce code avec votre', { align: 'center' });
       await printText('application QR préférée', { align: 'center' });
       await printText('================================', {});
-      
+
       // Avancer le papier
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       Alert.alert('Succès', 'QR Code imprimé avec succès!');
-      
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur lors de l\'impression du QR code');
+      Alert.alert('Erreur', "Erreur lors de l'impression du QR code");
     } finally {
       setIsProcessing(false);
     }
@@ -136,8 +155,8 @@ const QRCodePrintScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
+        <TouchableOpacity
+          style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <Text style={styles.backButtonText}>← Retour</Text>
@@ -148,9 +167,9 @@ const QRCodePrintScreen = ({ navigation }) => {
       <View style={styles.content}>
         {/* Sélection du type de données */}
         <Text style={styles.sectionTitle}>Type de données :</Text>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           style={styles.templateContainer}
         >
           {dataTemplates.map((template, index) => (
@@ -158,17 +177,21 @@ const QRCodePrintScreen = ({ navigation }) => {
               key={index}
               style={[
                 styles.templateButton,
-                selectedTemplate.label === template.label && styles.selectedTemplate
+                selectedTemplate.label === template.label &&
+                  styles.selectedTemplate,
               ]}
               onPress={() => {
                 setSelectedTemplate(template);
                 setQrData(''); // Reset data when changing template
               }}
             >
-              <Text style={[
-                styles.templateText,
-                selectedTemplate.label === template.label && styles.selectedTemplateText
-              ]}>
+              <Text
+                style={[
+                  styles.templateText,
+                  selectedTemplate.label === template.label &&
+                    styles.selectedTemplateText,
+                ]}
+              >
                 {template.label}
               </Text>
             </TouchableOpacity>
@@ -189,19 +212,21 @@ const QRCodePrintScreen = ({ navigation }) => {
         {/* Configuration de la taille */}
         <Text style={styles.sectionTitle}>Taille du QR Code :</Text>
         <View style={styles.sizeContainer}>
-          {['150', '200', '250'].map((size) => (
+          {['150', '200', '250'].map(size => (
             <TouchableOpacity
               key={size}
               style={[
                 styles.sizeButton,
-                qrSize === size && styles.selectedSize
+                qrSize === size && styles.selectedSize,
               ]}
               onPress={() => setQrSize(size)}
             >
-              <Text style={[
-                styles.sizeText,
-                qrSize === size && styles.selectedSizeText
-              ]}>
+              <Text
+                style={[
+                  styles.sizeText,
+                  qrSize === size && styles.selectedSizeText,
+                ]}
+              >
                 {size}px
               </Text>
             </TouchableOpacity>
@@ -232,7 +257,8 @@ const QRCodePrintScreen = ({ navigation }) => {
           <TouchableOpacity
             style={[
               styles.printButton,
-              (isProcessing || !isConnected() || !qrData.trim()) && styles.disabledButton
+              (isProcessing || !isConnected() || !qrData.trim()) &&
+                styles.disabledButton,
             ]}
             onPress={printQRInfo}
             disabled={isProcessing || !isConnected() || !qrData.trim()}
@@ -240,9 +266,7 @@ const QRCodePrintScreen = ({ navigation }) => {
             {isProcessing ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.printButtonText}>
-                Imprimer Infos QR
-              </Text>
+              <Text style={styles.printButtonText}>Imprimer Infos QR</Text>
             )}
           </TouchableOpacity>
 
@@ -250,15 +274,18 @@ const QRCodePrintScreen = ({ navigation }) => {
             style={[
               styles.printButton,
               styles.secondaryButton,
-              (isProcessing || !isConnected() || !qrData.trim()) && styles.disabledButton
+              (isProcessing || !isConnected() || !qrData.trim()) &&
+                styles.disabledButton,
             ]}
-            onPress={printQRCode}
+            onPress={HandlePrintQRCode}
             disabled={isProcessing || !isConnected() || !qrData.trim()}
           >
             {isProcessing ? (
               <ActivityIndicator size="small" color="#2196F3" />
             ) : (
-              <Text style={[styles.printButtonText, styles.secondaryButtonText]}>
+              <Text
+                style={[styles.printButtonText, styles.secondaryButtonText]}
+              >
                 Imprimer QR Complet
               </Text>
             )}
@@ -269,7 +296,8 @@ const QRCodePrintScreen = ({ navigation }) => {
         {!isConnected() && (
           <View style={styles.warningContainer}>
             <Text style={styles.warningText}>
-              ⚠️ Imprimante déconnectée. Connectez-vous d'abord à une imprimante.
+              ⚠️ Imprimante déconnectée. Connectez-vous d'abord à une
+              imprimante.
             </Text>
           </View>
         )}
@@ -278,11 +306,10 @@ const QRCodePrintScreen = ({ navigation }) => {
         <View style={styles.helpContainer}>
           <Text style={styles.helpTitle}>Guide d'utilisation :</Text>
           <Text style={styles.helpText}>
-            • URL : Saisissez une adresse web complète{'\n'}
-            • Email : Saisissez une adresse email{'\n'}
-            • Téléphone : Saisissez un numéro avec indicatif{'\n'}
-            • WiFi : Format SSID;MOT_DE_PASSE{'\n'}
-            • Texte : N'importe quel texte libre
+            • URL : Saisissez une adresse web complète{'\n'}• Email : Saisissez
+            une adresse email{'\n'}• Téléphone : Saisissez un numéro avec
+            indicatif{'\n'}• WiFi : Format SSID;MOT_DE_PASSE{'\n'}• Texte :
+            N'importe quel texte libre
           </Text>
         </View>
       </View>

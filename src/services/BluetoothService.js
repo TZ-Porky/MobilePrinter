@@ -33,6 +33,18 @@ class BluetoothService {
   }
 
   // ==========================================
+  // UTILS (NOUVELLE FONCTION)
+  // ==========================================
+  // Convertit une chaîne de caractères (avec des octets hexadécimaux) en Uint8Array
+  _stringToUint8Array(str) {
+    const arr = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) {
+      arr[i] = str.charCodeAt(i);
+    }
+    return arr;
+  }
+
+  // ==========================================
   // GESTION DES LISTENERS - OPTIMISÉE
   // ==========================================
 
@@ -548,6 +560,71 @@ class BluetoothService {
     } catch (error) {
       console.error(`❌ Erreur lors de l'impression: ${error.message}`);
       logService.addLog(`❌ Erreur impression: ${error.message}`, 'error');
+      await this.handleConnectionLoss();
+      return false;
+    }
+  }
+
+  // Imprime un codeQR
+  async printQRCode(data, options = {}) {
+    if (!this.connectedDevice) {
+      logService.addLog('Impression QR annulée : aucune imprimante connectée.', 'error');
+      return false;
+    }
+    if (!data) {
+      logService.addLog('Données QR manquantes pour l\'impression.', 'error');
+      return false;
+    }
+
+    logService.addLog(`Tentative d'impression QR Code avec les données: ${data}`, 'info');
+    try {
+      let qrCommands = '';
+
+      // Centrer le QR code si demandé (optionnel, dépend de l'imprimante)
+      if (options.align === 'center') {
+        qrCommands += PRINTER_COMMANDS.ALIGN_CENTER;
+      } else if (options.align === 'right') {
+        qrCommands += PRINTER_COMMANDS.ALIGN_RIGHT;
+      } else {
+        qrCommands += PRINTER_COMMANDS.ALIGN_LEFT;
+      }
+
+      // 1. Sélectionner le modèle QR Code (Modèle 2 est généralement le meilleur)
+      qrCommands += PRINTER_COMMANDS.QR_CODE_MODEL_2;
+
+      // 2. Définir la taille du module (points) - 'n' doit être entre 1 et 16
+      const size = options.size && options.size >= 1 && options.size <= 16 ? options.size : 8; // Taille par défaut 8
+      qrCommands += PRINTER_COMMANDS.QR_CODE_SIZE_N(size);
+
+      // 3. Définir le niveau de correction d'erreur (M est un bon compromis)
+      let errorCorrection = PRINTER_COMMANDS.QR_CODE_ERROR_CORRECTION_M;
+      if (options.errorCorrection) {
+        switch (options.errorCorrection.toUpperCase()) {
+          case 'L': errorCorrection = PRINTER_COMMANDS.QR_CODE_ERROR_CORRECTION_L; break;
+          case 'Q': errorCorrection = PRINTER_COMMANDS.QR_CODE_ERROR_CORRECTION_Q; break;
+          case 'H': errorCorrection = PRINTER_COMMANDS.QR_CODE_ERROR_CORRECTION_H; break;
+          default: break; // Utilise M par défaut
+        }
+      }
+      qrCommands += errorCorrection;
+
+      // 4. Stocker les données du QR Code
+      qrCommands += PRINTER_COMMANDS.QR_CODE_STORE_DATA(data);
+
+      // 5. Imprimer le QR Code
+      qrCommands += PRINTER_COMMANDS.QR_CODE_PRINT;
+
+      // 6. Avancer le papier pour séparer (optionnel)
+      qrCommands += PRINTER_COMMANDS.FEED;
+
+      // Convertir la chaîne de commande en Uint8Array avant d'envoyer
+      const dataBytes = this._stringToUint8Array(qrCommands);
+      await this.connectedDevice.write(dataBytes); // Envoi du Uint8Array
+      logService.addLog(`✅ QR Code "${data}" envoyé pour impression.`, 'success');
+      return true;
+    } catch (error) {
+      console.error(`❌ Erreur lors de l'impression du QR Code: ${error.message}`);
+      logService.addLog(`❌ Erreur impression QR: ${error.message}`, 'error');
       await this.handleConnectionLoss();
       return false;
     }

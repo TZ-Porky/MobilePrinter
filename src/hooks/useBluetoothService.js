@@ -1,5 +1,6 @@
 // ==========================================
-// Hook React pour utiliser le service
+// Hook React pour utiliser le service Bluetooth
+// Version mise à jour avec support QR Code
 // ==========================================
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -7,7 +8,7 @@ import { bluetoothService } from '../services/BluetoothService';
 import { logService } from '../services/LogService';
 
 // ==========================================
-// Hook React OPTIMISÉ
+// Hook React OPTIMISÉ avec QR Code
 // ==========================================
 
 export const useBluetoothService = () => {
@@ -46,33 +47,91 @@ export const useBluetoothService = () => {
     setLogs(newLogs);
   }, []);
   
-  // ==========================================
-  // DIAGNOSTICS
-  // ==========================================
-  const runFullDiagnostic = async () => {
-    return await bluetoothService.runFullDiagnostic();
-  };
+  // ==================== FONCTIONS D'IMPRESSION ====================== //
   
-  const checkPrinterStatus = async () => {
-    return await bluetoothService.checkPrinterStatus();
-  };
-  
-  const checkPaperStatus = async () => {
-    return await bluetoothService.checkPaperStatus();
-  };
-  
-  const attemptPrinterRecovery = async () => {
-    return await bluetoothService.attemptPrinterRecovery();
-  };
-  
-  const forcePrintTest = async () => {
-    return await bluetoothService.forcePrintTest();
-  };
-  
-  const emergencyReset = async () => {
-    return await bluetoothService.emergencyReset();
-  };
+  // Impression de texte
+  const printText = useCallback(async (text, options = {}) => {
+    return await bluetoothService.printText(text, options);
+  }, []);
 
+  // Impression de QR Code - NOUVELLE FONCTION
+  const printQRCode = useCallback(async (data, options = {}) => {
+    return await bluetoothService.printQRCode(data, options);
+  }, []);
+
+  // Avance du papier
+  const feedPaper = useCallback(async () => {
+    return await bluetoothService.feedPaper();
+  }, []);
+
+  // ==================== GESTION DES APPAREILS ====================== //
+  
+  // Initialisation du Bluetooth
+  const initializeBluetooth = useCallback(async () => {
+    return await bluetoothService.initializeBluetooth();
+  }, []);
+
+  // Chargement des appareils appairés
+  const loadPairedDevices = useCallback(async () => {
+    return await bluetoothService.loadPairedDevices();
+  }, []);
+
+  // Connexion à un appareil
+  const connectToDevice = useCallback(async (device) => {
+    return await bluetoothService.connectToDevice(device);
+  }, []);
+
+  // Déconnexion
+  const disconnect = useCallback(async () => {
+    return await bluetoothService.disconnect();
+  }, []);
+
+  // ==================== FONCTIONS D'ÉTAT ====================== //
+  
+  // Vérifier si connecté
+  const isConnected = useCallback(() => {
+    return bluetoothService.isConnected();
+  }, []);
+
+  // Vérifier si Bluetooth activé
+  const isBluetoothEnabled = useCallback(() => {
+    return bluetoothService.isBluetoothEnabled();
+  }, []);
+
+  // ==================== GESTION DES LOGS ====================== //
+  
+  // Nettoyer les logs
+  const clearLogs = useCallback(() => {
+    return logService.clearLogs();
+  }, []);
+
+  // ==================== DIAGNOSTICS ====================== //
+  
+  const runFullDiagnostic = useCallback(async () => {
+    return await bluetoothService.runFullDiagnostic();
+  }, []);
+  
+  const checkPrinterStatus = useCallback(async () => {
+    return await bluetoothService.checkPrinterStatus();
+  }, []);
+  
+  const checkPaperStatus = useCallback(async () => {
+    return await bluetoothService.checkPaperStatus();
+  }, []);
+  
+  const attemptPrinterRecovery = useCallback(async () => {
+    return await bluetoothService.attemptPrinterRecovery();
+  }, []);
+  
+  const forcePrintTest = useCallback(async () => {
+    return await bluetoothService.forcePrintTest();
+  }, []);
+  
+  const emergencyReset = useCallback(async () => {
+    return await bluetoothService.emergencyReset();
+  }, []);
+
+  // ==================== EFFET D'INITIALISATION ====================== //
 
   useEffect(() => {
     // S'abonner aux services au montage
@@ -110,26 +169,7 @@ export const useBluetoothService = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Actions mémorisées
-  const actions = useRef({
-    initializeBluetooth: () => bluetoothService.initializeBluetooth(),
-    loadPairedDevices: () => bluetoothService.loadPairedDevices(),
-    connectToDevice: (device) => bluetoothService.connectToDevice(device),
-    disconnect: () => bluetoothService.disconnect(),
-    printText: (text, options) => bluetoothService.printText(text, options),
-    feedPaper: () => bluetoothService.feedPaper(),
-    clearLogs: () => logService.clearLogs(),
-    isConnected: () => bluetoothService.isConnected(),
-    isBluetoothEnabled: () => bluetoothService.isBluetoothEnabled(),
-    
-    // Actions de diagnostic
-    runFullDiagnostic,
-    checkPrinterStatus,
-    checkPaperStatus,
-    attemptPrinterRecovery,
-    forcePrintTest,
-    emergencyReset,
-  });
+  // ==================== RETURN DU HOOK ====================== //
 
   return {
     // État
@@ -140,7 +180,30 @@ export const useBluetoothService = () => {
     isScanning,
     logs,
     
-    // Actions
-    ...actions.current,
+    // Actions d'impression
+    printText,
+    printQRCode,        // ← NOUVELLE FONCTION AJOUTÉE
+    feedPaper,
+    
+    // Actions Bluetooth
+    initializeBluetooth,
+    loadPairedDevices,
+    connectToDevice,
+    disconnect,
+    
+    // État et vérifications
+    isConnected,
+    isBluetoothEnabled,
+    
+    // Gestion des logs
+    clearLogs,
+    
+    // Actions de diagnostic
+    runFullDiagnostic,
+    checkPrinterStatus,
+    checkPaperStatus,
+    attemptPrinterRecovery,
+    forcePrintTest,
+    emergencyReset,
   };
 };
